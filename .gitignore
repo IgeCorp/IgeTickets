@@ -1,0 +1,9 @@
+# FOLDERS
+
+./node_modules/
+./dist/
+
+# FILES
+
+yarn.lock
+.env
