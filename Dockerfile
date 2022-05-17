@@ -12,5 +12,4 @@ RUN npm install
 
 # Build the project from typescript to javascript
 COPY . .
-RUN npm run build
 CMD ["npm", "start"]
