@@ -1,8 +1,10 @@
 import { Client as DiscordClient, Collection, Partials } from 'discord.js';
-import mysql from 'mysql';
+import { readdirSync } from 'fs';
+import { Connection, createConnection } from 'mysql';
+import { join } from 'path';
 
 export default class Client extends DiscordClient {
-    db: mysql.Connection;
+    db: Connection;
     slashs: Collection<string, any>;
     
     constructor() {
@@ -29,7 +31,7 @@ export default class Client extends DiscordClient {
 
         this.slashs = new Collection();
 
-        this.db = mysql.createConnection({
+        this.db = createConnection({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWD,
@@ -38,6 +40,59 @@ export default class Client extends DiscordClient {
         });
 
         this.db.connect();
+
+        this._eventsHandler();
+        this._loadCommands();
+        this._loadTables();
+
         this.login(process.env.DISCORD_TOKEN);
+    }
+
+    _eventsHandler(): void {
+        let count = 0;
+        const events = readdirSync(join(__dirname, '../events'));
+        events.forEach(event => {
+            try {
+                const file = require(join(__dirname, '../events', event));
+                this.on(event.split('.')[0], file.bind(null, this));
+                delete require.cache[require.resolve(join(__dirname, '../events', event))];
+                count++;
+            } catch (error: any) {
+                throw new Error(`An error occurred while loading event ${event}: ${error}`);
+            }
+        });
+        console.log(`Loaded ${count}/${events.length} events.`);
+    }
+
+    _loadCommands(): void {
+        let count = 0;
+        const commands = readdirSync(join(__dirname, '../commands'));
+        commands.forEach(command => {
+            try {
+                const file = require(join(__dirname, '../commands', command));
+                this.slashs.set(file.name, file);
+                delete require.cache[require.resolve(join(__dirname, '../commands', command))];
+                count++;
+            } catch (error: any) {
+                throw new Error(`An error occurred while loading command ${command}: ${error}`);
+            }
+        });
+        console.log(`Loaded ${count}/${commands.length} commands.`);
+    }
+
+    _loadTables(): void {
+        let count = 0;
+        const tables = readdirSync(join(__dirname, '../database'));
+        tables.forEach(table => {
+            try {
+                const file = require(join(__dirname, '../database', table));
+                new file(this);
+                delete require.cache[require.resolve(join(__dirname, '../database', table))];
+                count++;
+            } catch (error: any) {
+                throw new Error(`An error occurred while loading table ${table}: ${error}`);
+            }
+        });
+        console.log(`Loaded ${count}/${tables.length} tables.`);
     }
 }
