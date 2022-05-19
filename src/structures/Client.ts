@@ -6,7 +6,8 @@ import Command from './Command';
 
 export default class Client extends DiscordClient {
     db: Connection;
-    slashs: Collection<string, Command>;
+    slashs: Collection<string, any>;
+    testGuild: string | undefined;
     
     constructor() {
         super({
@@ -31,6 +32,7 @@ export default class Client extends DiscordClient {
         });
 
         this.slashs = new Collection();
+        this.testGuild = process.env.TEST_GUILD;
 
         this.db = createConnection({
             host: process.env.DB_HOST,
@@ -56,7 +58,14 @@ export default class Client extends DiscordClient {
     postSlashs(slashs: any): void {
         if (!this.isReady()) return console.error('Client is not ready.');
 
-        this.application.commands.set(slashs.toJSON());
+        slashs.forEach((slash: any) => {
+            try {
+                if (slash.data.guild_only !== true) return this.application?.commands.create(slash.data);
+                this.guilds.cache.get(`${this.testGuild}`)?.commands.create(slash.data);
+            } catch (error: any) {
+                console.error(error);
+            }
+        });
     }
 
     private _eventsHandler(): void {
@@ -81,7 +90,7 @@ export default class Client extends DiscordClient {
         commands.forEach(command => {
             try {
                 const file = require(join(__dirname, '../commands', command));
-                this.slashs.set(file.options.name, file);
+                this.slashs.set(file.data.name, file);
                 delete require.cache[require.resolve(join(__dirname, '../commands', command))];
                 count++;
             } catch (error: any) {

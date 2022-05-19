@@ -1,15 +1,20 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, PermissionResolvable } from 'discord.js';
 
 export default class Command {
+    data: { type: ApplicationCommandType; name: string; description: string; options: void[] | null; guild_only: boolean; };
+    
     constructor(options: CustomApplicationCommand) {
-        this._transform(options);
+        this.data = this._transform(options);
+
+        return this;
     }
 
-    private _transform(options: CustomApplicationCommand): string {
-        const newOptions = {
-            'type': options.type,
+    private _transform(options: CustomApplicationCommand) {
+        return {
+            'type': ApplicationCommandType.ChatInput,
             'name': options.name,
             'description': options.description,
+
             'options': options.options === undefined ? null : [
                 options.options?.forEach((option: CustomApplicationCommandOptions) => {
                     return {
@@ -31,30 +36,31 @@ export default class Command {
                     };
                 })
             ],
-            'guild_only': options.guildOnly === true ? (process.argv[2] === '--dev' ? false: true) : false
+            'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true
         }
-
-        return JSON.stringify(newOptions);
     }
 }
 
 interface CustomApplicationCommand {
-    type: ApplicationCommandType.ChatInput;
     name: string;
+    name_localization?: NameLocalization;
     description: string;
+    description_localization?: DescriptionLocalization;
     defaultMemberPermission?: PermissionResolvable;
     dmPermission?: string;
     options?: CustomApplicationCommandOptions[];
-    guildOnly: boolean;
+    guildOnly?: boolean;
 }
 
 interface CustomApplicationCommandOptions {
-    type: ApplicationCommandOptionType;
+    type: any;
     name: string;
+    name_localization?: NameLocalization;
     description: string;
+    description_localization?: DescriptionLocalization;
     required: boolean;
     choices?: CustomApplicationCommandOptionsChoices[];
-    options: CustomApplicationCommandOptions[];
+    options?: CustomApplicationCommandOptions[];
     min_value?: number;
     max_value?: number;
     autocomplete?: boolean
@@ -63,4 +69,12 @@ interface CustomApplicationCommandOptions {
 interface CustomApplicationCommandOptionsChoices {
     name: string;
     value: string | number;
+}
+
+interface NameLocalization {    
+    [key: string]: string;
+}
+
+interface DescriptionLocalization {
+    [key: string]: string;
 }
