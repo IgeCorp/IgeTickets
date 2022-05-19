@@ -2,10 +2,11 @@ import { Client as DiscordClient, Collection, Partials } from 'discord.js';
 import { readdirSync } from 'fs';
 import { Connection, createConnection } from 'mysql';
 import { join } from 'path';
+import Command from './Command';
 
 export default class Client extends DiscordClient {
     db: Connection;
-    slashs: Collection<string, any>;
+    slashs: Collection<string, Command>;
     
     constructor() {
         super({
@@ -48,7 +49,17 @@ export default class Client extends DiscordClient {
         this.login(process.env.DISCORD_TOKEN);
     }
 
-    _eventsHandler(): void {
+    get commands(): Collection<string, Command> {
+        return this.slashs;
+    }
+
+    postSlashs(slashs: any): void {
+        if (!this.isReady()) return console.error('Client is not ready.');
+
+        this.application.commands.set(slashs.toJSON());
+    }
+
+    private _eventsHandler(): void {
         let count = 0;
         const events = readdirSync(join(__dirname, '../events'));
         events.forEach(event => {
@@ -64,13 +75,13 @@ export default class Client extends DiscordClient {
         console.log(`Loaded ${count}/${events.length} events.`);
     }
 
-    _loadCommands(): void {
+    private _loadCommands(): void {
         let count = 0;
         const commands = readdirSync(join(__dirname, '../commands'));
         commands.forEach(command => {
             try {
                 const file = require(join(__dirname, '../commands', command));
-                this.slashs.set(file.name, file);
+                this.slashs.set(file.options.name, file);
                 delete require.cache[require.resolve(join(__dirname, '../commands', command))];
                 count++;
             } catch (error: any) {

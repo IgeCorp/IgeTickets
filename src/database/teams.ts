@@ -1,4 +1,4 @@
-import Client from "../structures/Client";
+import Client from '../structures/Client';
 
 export = class Teams {
     constructor(client: Client) {
@@ -14,7 +14,7 @@ export = class Teams {
             if (err) {
                 console.error(err);
             }
-            console.log("Teams table created.");
+            console.log('Teams table created.');
         });
     }
 }
