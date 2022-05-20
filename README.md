@@ -58,5 +58,3 @@ All pull requests are welcome.
 # About
 
 All pull request are verified manually before being merged.
-
-The code is runned in a docker container in our [Docker Hub](https://hub.docker.com/r/ige-corp/ige-tickets/).

@@ -2,12 +2,16 @@ import { Client as DiscordClient, Collection, Partials } from 'discord.js';
 import { readdirSync } from 'fs';
 import { Connection, createConnection } from 'mysql';
 import { join } from 'path';
+import axios from 'axios';
 import Command from './Command';
 
 export default class Client extends DiscordClient {
     db: Connection;
     slashs: Collection<string, any>;
     testGuild: string | undefined;
+    private _baseApiURI: string;
+    private _guildCommandsApiURI: string;
+    private _headers: { Authorization: string; 'Content-Type': string; };
     
     constructor() {
         super({
@@ -48,20 +52,37 @@ export default class Client extends DiscordClient {
         this._loadCommands();
         this._loadTables();
 
-        this.login(process.env.DISCORD_TOKEN);
-    }
+        this._baseApiURI = `https://discord.com/api/v10/applications/{application_id}/commands`;
+        this._guildCommandsApiURI = `https://discord.com/api/v10/applications/{application_id}/guilds/{guild_id}/commands`;
+        this._headers = {
+            'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
+            'Content-Type': 'application/json'
+        }
 
-    get commands(): Collection<string, Command> {
-        return this.slashs;
+        this.login(process.env.DISCORD_TOKEN);
     }
 
     postSlashs(slashs: any): void {
         if (!this.isReady()) return console.error('Client is not ready.');
 
-        slashs.forEach((slash: any) => {
+        const apiURI = this._baseApiURI.replace('{application_id}', this.user.id);
+        const guildApiURI = this._guildCommandsApiURI.replace('{application_id}', this.user.id).replace('{guild_id}', `${this.testGuild}`);
+
+        slashs.forEach((slash: Command) => {
             try {
-                if (slash.data.guild_only !== true) return this.application?.commands.create(slash.data);
-                this.guilds.cache.get(`${this.testGuild}`)?.commands.create(slash.data);
+                if (slash.data.guild_only !== true) return axios({
+                    method: 'post',
+                    url: apiURI,
+                    headers: this._headers,
+                    data: slash.data
+                });
+
+                axios({
+                    method: 'post',
+                    url: guildApiURI,
+                    headers: this._headers,
+                    data: slash.data
+                });
             } catch (error: any) {
                 console.error(error);
             }
