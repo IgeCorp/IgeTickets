@@ -70,16 +70,16 @@ export default class Client extends DiscordClient {
 
         slashs.forEach((slash: Command) => {
             try {
-                if (slash.data.guild_only !== true) return axios({
+                if (slash.data.guild_only) return axios({
                     method: 'post',
-                    url: apiURI,
+                    url: guildApiURI,
                     headers: this._headers,
                     data: slash.data
                 });
-
+                
                 axios({
                     method: 'post',
-                    url: guildApiURI,
+                    url: apiURI,
                     headers: this._headers,
                     data: slash.data
                 });
@@ -110,9 +110,9 @@ export default class Client extends DiscordClient {
         const commands = readdirSync(join(__dirname, '../commands'));
         commands.forEach(command => {
             try {
+                delete require.cache[require.resolve(join(__dirname, '../commands', command))];
                 const file = require(join(__dirname, '../commands', command));
                 this.slashs.set(file.data.name, file);
-                delete require.cache[require.resolve(join(__dirname, '../commands', command))];
                 count++;
             } catch (error: any) {
                 throw new Error(`An error occurred while loading command ${command}: ${error}`);

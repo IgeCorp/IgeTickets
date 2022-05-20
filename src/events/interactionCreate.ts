@@ -3,14 +3,14 @@ import { Interaction } from "../structures/Interaction";
 
 export = (client: Client, interaction: Interaction) => {
     if (interaction.isCommand()) {
-        const command = client.slashs.find(slash => slash.data.name === interaction.commandName);
+        const command = client.slashs.get(interaction.commandName);
 
         try {
-            command.run(interaction);
+            command?.run(interaction);
         } catch (error) {
             console.error(error);
             interaction.reply({
-                content: `An error occurred while running the command ${command.data.name}: \`\`\`\n${error}\n\`\`\``
+                content: `An error occurred while running the command ${command.name}: \`\`\`\n${error}\n\`\`\``
             });
         }
     }

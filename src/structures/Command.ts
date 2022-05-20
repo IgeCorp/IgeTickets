@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, ApplicationCommandType, PermissionResolvable } from 'discord.js';
 
 export default class Command {
-    data: { type: ApplicationCommandType; name: string; description: string; options: void[] | null; guild_only: boolean; };
+    data: any;
     
     constructor(options: CustomApplicationCommand) {
         this.data = this._transform(options);
@@ -9,35 +9,28 @@ export default class Command {
         return this;
     }
 
-    private _transform(options: CustomApplicationCommand) {
-        return {
+    private _transform(options: CustomApplicationCommand): any {
+        const commandOptions: any[] = [];
+
+        if (options.options) {
+            options.options.forEach((option: CustomApplicationCommandOptions) => {
+                commandOptions.push({
+                    type: option.type,
+                    name: option.name,
+                    description: option.description,
+                    required: option.required
+                });
+            });
+        }
+
+        return JSON.parse(JSON.stringify({
             'type': ApplicationCommandType.ChatInput,
             'name': options.name,
             'description': options.description,
 
-            'options': options.options === undefined ? null : [
-                options.options?.forEach((option: CustomApplicationCommandOptions) => {
-                    return {
-                        'type': option.type,
-                        'name': option.name,
-                        'description': option.description,
-                        'required': option.required,
-                        'choices': option.choices === undefined ? null : [
-                            option.choices.forEach((choice: CustomApplicationCommandOptionsChoices) => {
-                                return {
-                                    'name': choice.name,
-                                    'value': choice.value
-                                };
-                            })
-                        ],
-                        'min_value': option?.min_value,
-                        'max_value': option?.max_value,
-                        'autocomplete': option?.autocomplete
-                    };
-                })
-            ],
+            'options': commandOptions,
             'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true
-        }
+        }));
     }
 }
 

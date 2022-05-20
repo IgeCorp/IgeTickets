@@ -8,14 +8,22 @@ class Query extends Command {
             name: "query",
             description: "Sql query",
             defaultMemberPermission: "SendMessages",
-            guildOnly: true
+            guildOnly: true,
+            options: [
+                {
+                    type: ApplicationCommandOptionType.String,
+                    name: "query",
+                    description: "The query to run",
+                    required: true
+                }
+            ]
         });
     }
 
-    run(interaction: CommandInteraction) {
+    run(interaction: CommandInteraction): void {
         const query = interaction.options.get("query");
 
-        interaction.client.db.query(`${query}`, (err, result) => {
+        interaction.client.db.query(`${query!.value}`, (err, result) => {
             if (err) {
                 interaction.reply({
                     content: `An error occurred while running the query: \`\`\`\n${err}\n\`\`\``
