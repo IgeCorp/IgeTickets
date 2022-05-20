@@ -1,3 +1,5 @@
+[![IgeTickets Docker Image](https://github.com/IgeCorp/IgeTickets/actions/workflows/docker-image.yml/badge.svg?branch=master)](https://github.com/IgeCorp/IgeTickets/actions/workflows/docker-image.yml)
+
 # Requirements
 
 Nodejs version superior or equal to [16.x](https://nodejs.org/en/download/) (LTS version recommended)
