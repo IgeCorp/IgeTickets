@@ -22,7 +22,6 @@ export default class Button {
 }
 
 interface ButtonData {
-    type: number;
     style: any;
     label?: string;
     emoji?: ButtonEmoji;

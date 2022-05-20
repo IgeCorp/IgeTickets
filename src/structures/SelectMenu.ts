@@ -20,7 +20,6 @@ export default class SelectMenu {
 }
 
 interface SelectMenuData {
-    type: number;
     customId: string;
     options: SelectMenuOption[];
     placeholder?: string;

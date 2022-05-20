@@ -22,7 +22,6 @@ export default class TextInput {
 }
 
 interface TextInputData {
-    type: number;
     customId: string;
     style: any;
     label: string;

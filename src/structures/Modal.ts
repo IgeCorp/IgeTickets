@@ -1,3 +1,6 @@
+import { TextInputStyle } from "discord.js";
+import TextInput from "./TextInput";
+
 export default class Modal {
     data: any;
     
@@ -31,3 +34,23 @@ interface ModalComponents {
     type: number;
     components: any[];
 }
+
+export const testModal = new Modal({
+    title: 'Modal Title',
+    customId: 'modal-id',
+    components: [
+        {
+            type: 1,
+            components: [
+                new TextInput({
+                    label: 'Text Input',
+                    placeholder: 'Placeholder',
+                    value: 'Value',
+                    customId: 'text-input-id',
+                    style: TextInputStyle.Paragraph,
+                    required: true
+                })
+            ]
+        }
+    ]
+});
