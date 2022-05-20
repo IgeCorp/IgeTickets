@@ -23,7 +23,7 @@ export default class Button {
 
 interface ButtonData {
     type: number;
-    style: ButtonStyle;
+    style: any;
     label?: string;
     emoji?: ButtonEmoji;
     customId?: string;
