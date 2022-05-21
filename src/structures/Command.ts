@@ -10,14 +10,16 @@ export default class Command {
     }
 
     private _transform(options: CustomApplicationCommand): any {
-        const commandOptions: any[] = [];
+        let commandOptions: CustomApplicationCommandOptions[] = [];
 
         if (options.options) {
             options.options.forEach((option: CustomApplicationCommandOptions) => {
                 commandOptions.push({
                     type: option.type,
                     name: option.name,
+                    name_localization: option.name_localization ?? {},
                     description: option.description,
+                    description_localization: option.description_localization ?? {},
                     required: option.required
                 });
             });
@@ -26,8 +28,9 @@ export default class Command {
         return JSON.parse(JSON.stringify({
             'type': ApplicationCommandType.ChatInput,
             'name': options.name,
+            'name_localization': options.name_localization ?? {},
             'description': options.description,
-
+            'description_localization': options.description_localization ?? {},
             'options': commandOptions,
             'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true
         }));

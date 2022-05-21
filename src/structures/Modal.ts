@@ -9,18 +9,19 @@ export default class Modal {
 
         return this;
     }
-    private _transform(options: ModalData) {
-        const componentsRows = [];
+
+    private _transform(options: ModalData): { title: string; custom_id: string; components: ModalComponents[]; } {
+        let componentsRows = [];
 
         for (const components of options.components) {
             componentsRows.push(components);
         }
 
-        return JSON.parse(JSON.stringify({
+        return {
             'title': options.title,
             'custom_id': options.customId,
-            'components': componentsRows
-        }));
+            'components': componentsRows ?? []
+        };
     }
 }
 

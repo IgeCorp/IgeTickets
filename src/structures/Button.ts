@@ -1,5 +1,3 @@
-import { ButtonStyle } from 'discord.js';
-
 export default class Button {
     data: any;
 
@@ -8,6 +6,7 @@ export default class Button {
 
         return this;
     }
+
     private _transform(options: ButtonData): any {
         return JSON.parse(JSON.stringify({
             'type': 2,

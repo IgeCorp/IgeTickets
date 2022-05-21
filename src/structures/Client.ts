@@ -4,6 +4,8 @@ import { Connection, createConnection } from 'mysql';
 import { join } from 'path';
 import axios from 'axios';
 import Command from './Command';
+import { CommandInteraction } from './Interaction';
+import Modal from './Modal';
 
 export default class Client extends DiscordClient {
     db: Connection;
@@ -87,6 +89,26 @@ export default class Client extends DiscordClient {
                 console.error(error);
             }
         });
+    }
+
+    async sendModal(interaction: CommandInteraction, modal: Modal): Promise<void> {
+        const apiUri = 'https://discord.com/api/v10/interactions/{interaction_id}/{interaction_token}/callback';
+
+        const uri = apiUri.replace('{interaction_id}', interaction.id).replace('{interaction_token}', interaction.token);
+
+        try {
+            await axios({
+                method: 'post',
+                url: uri,
+                headers: this._headers,
+                data: {
+                    type: 9,
+                    data: modal.data
+                }
+            });
+        } catch (error: any) {
+            console.error(error.response);
+        }
     }
 
     private _eventsHandler(): void {

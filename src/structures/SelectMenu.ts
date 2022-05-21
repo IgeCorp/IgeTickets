@@ -1,21 +1,20 @@
 export default class SelectMenu {
-    data: any;
+    type: number;
+    custom_id: string;
+    options: SelectMenuOption[];
+    placeholder: string | undefined;
+    min_values: number;
+    max_values: number;
+    disabled: boolean;
 
     constructor(options: SelectMenuData) {
-        this.data = this._transform(options);
-
-        return this;
-    }
-    private _transform(options: SelectMenuData): any {
-        return JSON.parse(JSON.stringify({
-            'type': 3,
-            'custom_id': options?.customId,
-            'options': options?.options ?? [],
-            'placeholder': options?.placeholder,
-            'min_values': options?.minValues ?? 1,
-            'max_values': options?.maxValues ?? 1,
-            'disabled': options?.disabled ?? false
-        }));
+        this.type = 3;
+        this.custom_id = options?.customId;
+        this.options = options?.options ?? [];
+        this.placeholder = options?.placeholder;
+        this.min_values = options?.minValues ?? 1;
+        this.max_values = options?.maxValues ?? 1;
+        this.disabled = options?.disabled ?? false;
     }
 }
 

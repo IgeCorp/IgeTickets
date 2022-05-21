@@ -1,23 +1,24 @@
 export default class TextInput {
-    data: any;
+    type: number;
+    custom_id: string;
+    style: any;
+    label: string;
+    min_length: number | undefined;
+    max_length: number | undefined;
+    required: boolean;
+    value: string | undefined;
+    placeholder: string | undefined;
 
     constructor(options: TextInputData) {
-        this.data = this._transform(options);
-
-        return this;
-    }
-    private _transform(options: TextInputData): any {
-        return JSON.parse(JSON.stringify({
-            'type': 4,
-            'custom_id': options.customId,
-            'style': options.style,
-            'label': options.label,
-            'min_length': options?.minLength,
-            'max_length': options?.maxLength,
-            'required': options?.required ?? false,
-            'value': options?.value,
-            'placeholder': options?.placeholder
-        }));
+        this.type = 4;
+        this.custom_id = options.customId;
+        this.style = options.style;
+        this.label = options.label;
+        this.min_length = options?.minLength;
+        this.max_length = options?.maxLength;
+        this.required = options?.required ?? false;
+        this.value = options?.value;
+        this.placeholder = options?.placeholder;
     }
 }
 

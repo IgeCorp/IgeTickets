@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
+import { testModal } from "../structures/Modal";
 
 class Query extends Command {
     constructor() {
@@ -20,7 +21,7 @@ class Query extends Command {
         });
     }
 
-    run(interaction: CommandInteraction): void {
+    async run(interaction: CommandInteraction): Promise<void> {
         const query = interaction.options.get("query");
 
         interaction.client.db.query(`${query!.value}`, (err, result) => {
