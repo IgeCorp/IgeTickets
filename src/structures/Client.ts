@@ -64,8 +64,10 @@ export default class Client extends DiscordClient {
         this.login(process.env.DISCORD_TOKEN);
     }
 
-    postSlashs(slashs: any): void {
+    async postSlashs(slashs: any): Promise<void> {
         if (!this.isReady()) return console.error('Client is not ready.');
+
+        await this._deleteAllCommandsOfClient();
 
         const apiURI = this._baseApiURI.replace('{application_id}', this.user.id);
         const guildApiURI = this._guildCommandsApiURI.replace('{application_id}', this.user.id).replace('{guild_id}', `${this.testGuild}`);
@@ -108,6 +110,46 @@ export default class Client extends DiscordClient {
             });
         } catch (error: any) {
             console.error(error.response);
+        }
+    }
+
+    private async _deleteAllCommandsOfClient(): Promise<void> {
+        const apiURI = this._baseApiURI.replace('{application_id}', this.user!.id);
+        const guildApiURI = this._guildCommandsApiURI.replace('{application_id}', this.user!.id).replace('{guild_id}', `${this.testGuild}`);
+
+        try {
+            const data = await axios({
+                method: 'get',
+                url: apiURI,
+                headers: this._headers
+            });
+
+            const data2 = await axios({
+                method: 'get',
+                url: guildApiURI,
+                headers: this._headers
+            });
+
+            console.log(data.data);
+            console.log(data2.data);
+
+            // data.data.forEach((command: any) => {
+            //     axios({
+            //         method: 'delete',
+            //         url: apiURI + `/${command.id}`,
+            //         headers: this._headers
+            //     });
+            // });
+
+            // data2.data.forEach((command: any) => {
+            //     axios({
+            //         method: 'delete',
+            //         url: guildApiURI + `/${command.id}`,
+            //         headers: this._headers
+            //     });
+            // });
+        } catch (error: any) {
+            console.error(error);
         }
     }
 

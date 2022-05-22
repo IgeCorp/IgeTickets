@@ -15,19 +15,20 @@ class CreateMenu extends Command {
                 "fr": "Crée un menu",
                 "en-GB": "Creates a menu"
             },
+            guildOnly: true,
             defaultMemberPermission: "ModerateMembers",
             options: [
                 {
-                    type: ApplicationCommandOptionType.String,
-                    name: "name",
+                    type: ApplicationCommandOptionType.Channel,
+                    name: "channel",
                     name_localization: {
-                        "fr": "nom",
-                        "en-GB": "name"
+                        "fr": "channel",
+                        "en-GB": "channel"
                     },
-                    description: "The name of the menu",
+                    description: "The channel where the menu will be created",
                     description_localization: {
-                        "fr": "Le nom du menu",
-                        "en-GB": "The name of the menu"
+                        "fr": "Le channel où le menu sera créé",
+                        "en-GB": "The channel where the menu will be created"
                     },
                     required: true
                 }
@@ -36,6 +37,9 @@ class CreateMenu extends Command {
     }
 
     async run(interaction: CommandInteraction): Promise<void> {
+        const channel = interaction.options.get("channel");
+
+        console.log(channel?.channel);
     }
 }
 

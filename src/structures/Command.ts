@@ -6,6 +6,8 @@ export default class Command {
     constructor(options: CustomApplicationCommand) {
         this.data = this._transform(options);
 
+        console.log(this.data.default_member_permission);
+
         return this;
     }
 
@@ -32,7 +34,8 @@ export default class Command {
             'description': options.description,
             'description_localization': options.description_localization ?? {},
             'options': commandOptions,
-            'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true
+            'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true,
+            'default_member_permission': options.defaultMemberPermission ?? '',
         }));
     }
 }
