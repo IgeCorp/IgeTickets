@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
 
@@ -16,7 +16,7 @@ class CreateMenu extends Command {
                 "en-GB": "Creates a menu"
             },
             guildOnly: true,
-            defaultMemberPermission: "ModerateMembers",
+            defaultMemberPermissions: PermissionFlagsBits.ManageGuild.toString(),
             options: [
                 {
                     type: ApplicationCommandOptionType.Channel,

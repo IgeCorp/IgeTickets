@@ -1,12 +1,10 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, PermissionResolvable } from 'discord.js';
+import { ApplicationCommandType } from 'discord.js';
 
 export default class Command {
     data: any;
     
     constructor(options: CustomApplicationCommand) {
         this.data = this._transform(options);
-
-        console.log(this.data.default_member_permission);
 
         return this;
     }
@@ -35,7 +33,8 @@ export default class Command {
             'description_localization': options.description_localization ?? {},
             'options': commandOptions,
             'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true,
-            'default_member_permission': options.defaultMemberPermission ?? '',
+            'default_member_permissions': options.defaultMemberPermissions ?? '',
+            'dm_permission': options.dmPermission ?? false,
         }));
     }
 }
@@ -45,7 +44,7 @@ interface CustomApplicationCommand {
     name_localization?: NameLocalization;
     description: string;
     description_localization?: DescriptionLocalization;
-    defaultMemberPermission?: PermissionResolvable;
+    defaultMemberPermissions?: string
     dmPermission?: string;
     options?: CustomApplicationCommandOptions[];
     guildOnly?: boolean;

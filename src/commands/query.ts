@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
 import { testModal } from "../structures/Modal";
@@ -8,7 +8,7 @@ class Query extends Command {
         super({
             name: "query",
             description: "Sql query",
-            defaultMemberPermission: "SendMessages",
+            defaultMemberPermissions: PermissionFlagsBits.Administrator.toString(),
             guildOnly: true,
             options: [
                 {

@@ -67,7 +67,7 @@ export default class Client extends DiscordClient {
     async postSlashs(slashs: any): Promise<void> {
         if (!this.isReady()) return console.error('Client is not ready.');
 
-        await this._deleteAllCommandsOfClient();
+        //await this._deleteAllCommandsOfClient();
 
         const apiURI = this._baseApiURI.replace('{application_id}', this.user.id);
         const guildApiURI = this._guildCommandsApiURI.replace('{application_id}', this.user.id).replace('{guild_id}', `${this.testGuild}`);
@@ -129,9 +129,6 @@ export default class Client extends DiscordClient {
                 url: guildApiURI,
                 headers: this._headers
             });
-
-            console.log(data.data);
-            console.log(data2.data);
 
             // data.data.forEach((command: any) => {
             //     axios({
