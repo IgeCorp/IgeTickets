@@ -17,9 +17,9 @@ export default class Command {
                 commandOptions.push({
                     type: option.type,
                     name: option.name,
-                    name_localization: option.name_localization ?? {},
+                    name_localizations: option.name_localizations || {},
                     description: option.description,
-                    description_localization: option.description_localization ?? {},
+                    description_localizations: option.description_localizations || {},
                     required: option.required
                 });
             });
@@ -28,22 +28,23 @@ export default class Command {
         return JSON.parse(JSON.stringify({
             'type': ApplicationCommandType.ChatInput,
             'name': options.name,
-            'name_localization': options.name_localization ?? {},
+            'name_localizations': options.name_localizations || {},
             'description': options.description,
-            'description_localization': options.description_localization ?? {},
+            'description_localizations': options.description_localizations || {},
             'options': commandOptions,
             'guild_only': options.guildOnly !== true ? (process.argv[2] === '--dev' ? true : false) : true,
             'default_member_permissions': options.defaultMemberPermissions ?? '',
             'dm_permission': options.dmPermission ?? false,
+            'default_permission': false
         }));
     }
 }
 
 interface CustomApplicationCommand {
     name: string;
-    name_localization?: NameLocalization;
+    name_localizations?: NameLocalizations;
     description: string;
-    description_localization?: DescriptionLocalization;
+    description_localizations?: DescriptionLocalizations;
     defaultMemberPermissions?: string
     dmPermission?: string;
     options?: CustomApplicationCommandOptions[];
@@ -53,9 +54,9 @@ interface CustomApplicationCommand {
 interface CustomApplicationCommandOptions {
     type: any;
     name: string;
-    name_localization?: NameLocalization;
+    name_localizations?: NameLocalizations;
     description: string;
-    description_localization?: DescriptionLocalization;
+    description_localizations?: DescriptionLocalizations;
     required: boolean;
     choices?: CustomApplicationCommandOptionsChoices[];
     options?: CustomApplicationCommandOptions[];
@@ -69,10 +70,10 @@ interface CustomApplicationCommandOptionsChoices {
     value: string | number;
 }
 
-interface NameLocalization {    
+interface NameLocalizations {    
     [key: string]: string;
 }
 
-interface DescriptionLocalization {
+interface DescriptionLocalizations {
     [key: string]: string;
 }

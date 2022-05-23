@@ -15,6 +15,7 @@ export default class Modal {
 
         for (const components of options.components) {
             componentsRows.push(components);
+            console.log(components.components);
         }
 
         return {
@@ -35,23 +36,3 @@ interface ModalComponents {
     type: number;
     components: any[];
 }
-
-export const testModal = new Modal({
-    title: 'Modal Title',
-    customId: 'modal-id',
-    components: [
-        {
-            type: 1,
-            components: [
-                new TextInput({
-                    label: 'Text Input',
-                    placeholder: 'Placeholder',
-                    value: 'Value',
-                    customId: 'text-input-id',
-                    style: TextInputStyle.Paragraph,
-                    required: true
-                })
-            ]
-        }
-    ]
-});

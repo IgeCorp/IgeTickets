@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
-import { testModal } from "../structures/Modal";
 
 class Query extends Command {
     constructor() {

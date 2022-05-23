@@ -1,4 +1,6 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import Menu from "../components/modals/menu";
+import Team from "../components/selectors/team";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
 
@@ -6,40 +8,24 @@ class CreateMenu extends Command {
     constructor() {
         super({
             name: "create-menu",
-            name_localization: {
+            name_localizations: {
                 "fr": "creer-menu",
-                "en-GB": "create-menu"
+                "en-GB": "create-menu",
+                "en-US": "create-menu",
             },
             description: "Creates a menu",
-            description_localization: {
+            description_localizations: {
                 "fr": "Crée un menu",
-                "en-GB": "Creates a menu"
+                "en-GB": "Creates a menu",
+                "en-US": "Creates a menu"
             },
             guildOnly: true,
-            defaultMemberPermissions: PermissionFlagsBits.ManageGuild.toString(),
-            options: [
-                {
-                    type: ApplicationCommandOptionType.Channel,
-                    name: "channel",
-                    name_localization: {
-                        "fr": "channel",
-                        "en-GB": "channel"
-                    },
-                    description: "The channel where the menu will be created",
-                    description_localization: {
-                        "fr": "Le channel où le menu sera créé",
-                        "en-GB": "The channel where the menu will be created"
-                    },
-                    required: true
-                }
-            ]
+            defaultMemberPermissions: PermissionFlagsBits.ManageGuild.toString()
         });
     }
 
     async run(interaction: CommandInteraction): Promise<void> {
-        const channel = interaction.options.get("channel");
-
-        console.log(channel?.channel);
+        await interaction.client.sendModal(interaction, new Menu(interaction));
     }
 }
 

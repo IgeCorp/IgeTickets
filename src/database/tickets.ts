@@ -10,7 +10,7 @@ export = class Tickets {
             author VARCHAR(255) NOT NULL,
             created VARCHAR(255) NOT NULL,
             PRIMARY KEY (id)
-        )`, (err: any, results: any) => {
+        )`, (err: any, _results: any) => {
             if (err) {
                 console.error(err);
             }

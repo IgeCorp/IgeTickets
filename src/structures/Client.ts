@@ -44,14 +44,14 @@ export default class Client extends DiscordClient {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWD,
-            database: process.env.DB,
-            localAddress: process.env.DB_IP
+            database: process.env.DB
         });
 
         this.db.connect();
 
         this._eventsHandler();
         this._loadCommands();
+        // this._dropAllTables();
         this._loadTables();
 
         this._baseApiURI = `https://discord.com/api/v10/applications/{application_id}/commands`;
@@ -64,24 +64,22 @@ export default class Client extends DiscordClient {
         this.login(process.env.DISCORD_TOKEN);
     }
 
-    async postSlashs(slashs: any): Promise<void> {
+    postSlashs(): void {
         if (!this.isReady()) return console.error('Client is not ready.');
-
-        //await this._deleteAllCommandsOfClient();
 
         const apiURI = this._baseApiURI.replace('{application_id}', this.user.id);
         const guildApiURI = this._guildCommandsApiURI.replace('{application_id}', this.user.id).replace('{guild_id}', `${this.testGuild}`);
 
-        slashs.forEach((slash: Command) => {
+        this.slashs.forEach(async (slash: Command) => {
             try {
-                if (slash.data.guild_only) return axios({
+                if (slash.data.guild_only) return await axios({
                     method: 'post',
                     url: guildApiURI,
                     headers: this._headers,
                     data: slash.data
                 });
                 
-                axios({
+                await axios({
                     method: 'post',
                     url: apiURI,
                     headers: this._headers,
@@ -91,6 +89,8 @@ export default class Client extends DiscordClient {
                 console.error(error);
             }
         });
+
+        console.log('Slashs posted.');
     }
 
     async sendModal(interaction: CommandInteraction, modal: Modal): Promise<void> {
@@ -130,24 +130,35 @@ export default class Client extends DiscordClient {
                 headers: this._headers
             });
 
-            // data.data.forEach((command: any) => {
-            //     axios({
-            //         method: 'delete',
-            //         url: apiURI + `/${command.id}`,
-            //         headers: this._headers
-            //     });
-            // });
+            console.log(data.data);
+            console.log(data2.data);
 
-            // data2.data.forEach((command: any) => {
-            //     axios({
-            //         method: 'delete',
-            //         url: guildApiURI + `/${command.id}`,
-            //         headers: this._headers
-            //     });
-            // });
+            data.data.forEach((command: any) => {
+                axios({
+                    method: 'delete',
+                    url: apiURI + `/${command.id}`,
+                    headers: this._headers
+                });
+            });
+                
+            data2.data.forEach((command: any) => {
+                axios({
+                    method: 'delete',
+                    url: guildApiURI + `/${command.id}`,
+                    headers: this._headers
+                });
+            });
         } catch (error: any) {
             console.error(error);
         }
+    }
+
+    private _dropAllTables(): void {
+        const tables = readdirSync(join(__dirname, '../database'));
+
+        tables.forEach((table: string) => this.db.query(`DROP TABLE IF EXISTS ${table.split('.')[0]}`));
+
+        console.log('Tables dropped.');
     }
 
     private _eventsHandler(): void {
