@@ -168,7 +168,6 @@ export default class Client extends DiscordClient {
             try {
                 const file = require(join(__dirname, '../events', event));
                 this.on(event.split('.')[0], file.bind(null, this));
-                delete require.cache[require.resolve(join(__dirname, '../events', event))];
                 count++;
             } catch (error: any) {
                 throw new Error(`An error occurred while loading event ${event}: ${error}`);
@@ -182,7 +181,6 @@ export default class Client extends DiscordClient {
         const commands = readdirSync(join(__dirname, '../commands'));
         commands.forEach(command => {
             try {
-                delete require.cache[require.resolve(join(__dirname, '../commands', command))];
                 const file = require(join(__dirname, '../commands', command));
                 this.slashs.set(file.data.name, file);
                 count++;

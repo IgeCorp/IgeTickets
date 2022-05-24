@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import Menu from "../components/modals/menu";
-import Team from "../components/selectors/team";
 import Command from "../structures/Command";
 import { CommandInteraction } from "../structures/Interaction";
 
@@ -25,7 +24,9 @@ class CreateMenu extends Command {
     }
 
     async run(interaction: CommandInteraction): Promise<void> {
-        await interaction.client.sendModal(interaction, new Menu(interaction));
+        const menu = new Menu();
+        await interaction.client.sendModal(interaction, menu);
+        menu.handleSubmit(interaction);
     }
 }
 
