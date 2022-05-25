@@ -1,4 +1,3 @@
-import { TextInputStyle } from "discord.js";
 import TextInput from "./TextInput";
 
 export default class Modal {
@@ -15,7 +14,6 @@ export default class Modal {
 
         for (const components of options.components) {
             componentsRows.push(components);
-            console.log(components.components);
         }
 
         return {
@@ -34,5 +32,5 @@ interface ModalData {
 
 interface ModalComponents {
     type: number;
-    components: any[];
+    components: TextInput[];
 }

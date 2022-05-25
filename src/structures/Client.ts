@@ -41,15 +41,17 @@ export default class Client extends DiscordClient {
         this.testGuild = process.env.TEST_GUILD;
 
         this.db = createConnection({
+            localAddress: process.env.DB_IP,
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWD,
-            database: process.env.DB
+            database: process.env.DB,
+            connectTimeout: 10000
         });
 
         this.db.connect();
 
-        this._eventsHandler();
+        this._loadEvents();
         this._loadCommands();
         // this._dropAllTables();
         this._loadTables();
@@ -153,15 +155,9 @@ export default class Client extends DiscordClient {
         }
     }
 
-    private _dropAllTables(): void {
-        const tables = readdirSync(join(__dirname, '../database'));
+    /* Loaders */
 
-        tables.forEach((table: string) => this.db.query(`DROP TABLE IF EXISTS ${table.split('.')[0]}`));
-
-        console.log('Tables dropped.');
-    }
-
-    private _eventsHandler(): void {
+    private _loadEvents(): void {
         let count = 0;
         const events = readdirSync(join(__dirname, '../events'));
         events.forEach(event => {
@@ -191,7 +187,7 @@ export default class Client extends DiscordClient {
         console.log(`Loaded ${count}/${commands.length} commands.`);
     }
 
-    _loadTables(): void {
+    private _loadTables(): void {
         let count = 0;
         const tables = readdirSync(join(__dirname, '../database'));
         tables.forEach(table => {
@@ -205,5 +201,13 @@ export default class Client extends DiscordClient {
             }
         });
         console.log(`Loaded ${count}/${tables.length} tables.`);
+    }
+
+    private _dropAllTables(): void {
+        const tables = readdirSync(join(__dirname, '../database'));
+
+        tables.forEach((table: string) => this.db.query(`DROP TABLE IF EXISTS ${table.split('.')[0]}`));
+
+        console.log('Tables dropped.');
     }
 }

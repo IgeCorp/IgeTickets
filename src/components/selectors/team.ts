@@ -3,19 +3,19 @@ import SelectMenu from "../../structures/SelectMenu";
 
 export default class Team extends SelectMenu {
     constructor(interaction: CommandInteraction) {
-        let options: { label: any; value: any; }[] = [];
-
+        let options: { label: any; value: any; description: string; }[] = [];
+        
         interaction.client.db.query(`SELECT * FROM teams WHERE guild = ${interaction.guild!.id}`, (err, res) => {
             if (err) {
-                console.error(err);
+                interaction.reply("An error occured while fetching the teams.");
                 return;
             }
-
+            
             res.forEach((row: any) => {
-                console.log(row);
                 options.push({
                     label: row.name,
-                    value: row.role
+                    value: row.role,
+                    description: row.description
                 });
             });
         });
