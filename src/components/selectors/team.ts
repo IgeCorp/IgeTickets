@@ -23,9 +23,9 @@ export default class Team extends SelectMenu {
         super({
             customId: "team",
             options: options,
-            placeholder: "Select one or multiple teams",
+            placeholder: "Select one teams",
             minValues: 1,
-            maxValues: 10
+            maxValues: 1
         })
     }
 }
